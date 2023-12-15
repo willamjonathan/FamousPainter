@@ -3,19 +3,21 @@ from tkinter import ttk
 import os
 import subprocess
 from PIL import Image, ImageTk
-
+import sys
 
 def button1_click():
     try:
-        subprocess.run(["python", "reconstructor/generated.py"])
+        # subprocess.run(["python", "reconstructor/generated.py"])
+        subprocess.run([sys.executable, "reconstructor/generated.py"])
+
         label.config(text="Painting generator is run", fg="green")
     except Exception as e:
         label.config(text=f"Error: {str(e)}", fg="red")
 
 def button2_click():
     try:
-        # disini ganti aja
-        subprocess.run(["python", "identifier/main.py"])
+        # subprocess.run(["python", "identifier/main.py"])
+        subprocess.run([sys.executable, "identifier/main.py"])
         label.config(text="Painting identifier is run", fg="green")
     except Exception as e:
         label.config(text=f"Error: {str(e)}", fg="red")
@@ -25,8 +27,10 @@ root = tk.Tk()
 root.title("AI Project")
 
 # Center the window on the screen
-window_width = 400
-window_height = 350  # Increased height to accommodate the title and image
+# window_width = 400
+# window_height = 350  
+window_width = 1000
+window_height = 700 
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 x_position = (screen_width - window_width) // 2
