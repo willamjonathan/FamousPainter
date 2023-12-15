@@ -6,7 +6,7 @@ import random
 import numpy
 import os
 
-import image_test
+import test_img
 import elitism
 
 import matplotlib.pyplot as plt
@@ -29,13 +29,13 @@ except Exception as e:
 
 print(file_content)
 # problem related constants
-POLYGON_SIZE = 3
-NUM_OF_POLYGONS = 100
+POLY_SIZE = 3
+NUM_OF_POLYS = 100
 
 # calculate total number of params in chromosome:
-# For each polygon we have:
+# For each POLY we have:
 # two coordinates per vertex, 3 color values, one alpha value
-NUM_OF_PARAMS = NUM_OF_POLYGONS * (POLYGON_SIZE * 2 + 4)
+NUM_OF_PARAMS = NUM_OF_POLYS * (POLY_SIZE * 2 + 4)
 
 # Genetic Algorithm constants:
 pop_SIZE = 200
@@ -51,12 +51,12 @@ random.seed(RANDOM_SEED)
 
 # create the image test class instance:
 img_upload = file_content
-imageTest = image_test.ImageTest(img_upload, POLYGON_SIZE)
+ConstructImage = test_img.ConstructImage(img_upload, POLY_SIZE)
 
 # calculate total number of params in chromosome:
-# For each polygon we have:
+# For each POLY we have:
 # two coordinates per vertex, 3 color values, one alpha value
-NUM_OF_PARAMS = NUM_OF_POLYGONS * (POLYGON_SIZE * 2 + 4)
+NUM_OF_PARAMS = NUM_OF_POLYS * (POLY_SIZE * 2 + 4)
 
 # all parameter values are bound between 0 and 1, later to be expanded:
 BOUNDS_LOW, BOUNDS_HIGH = 0.0, 1.0  # boundaries for all dimensions
@@ -92,8 +92,7 @@ toolbox.register("popCreator",
 
 # fitness calculation using MSE as difference metric:
 def getDiff(individual):
-    return imageTest.getDifference(individual, "MSE"),
-    #return imageTest.getDifference(individual, "SSIM"),
+    return ConstructImage.MSE_diff(individual, "MSE"),
 
 toolbox.register("evaluate", getDiff)
 
@@ -116,18 +115,18 @@ toolbox.register("mutate",
 
 
 # save the best current drawing every 100 generations (used as a callback):
-def saveImage(gen, polygonData):
+def saveImage(gen, polyData):
 
     # only every 10 generations:
     if gen % 10 == 0:
 
         # create folder if does not exist:
-        folder = "reconstructor/images/results".format(POLYGON_SIZE, NUM_OF_POLYGONS)
+        folder = "reconstructor/images/results".format(POLY_SIZE, NUM_OF_POLYS)
         if not os.path.exists(folder):
             os.makedirs(folder)
 
         # save the image in the folder:
-        imageTest.saveImage(polygonData,
+        ConstructImage.save_img(polyData,
                             "{}/after-{}-gen.png".format(folder, gen),
                             "After {} Generations".format(gen))
 
@@ -166,7 +165,7 @@ def main():
     print()
 
     # draw best image next to reference image:
-    imageTest.plotImages(imageTest.polygonDataToImage(best))
+    ConstructImage.plt_img(ConstructImage.POLYDataToImage(best))
 
     # extract statistics:
     minFitnessValues, meanFitnessValues = logbook.select("min", "avg")
