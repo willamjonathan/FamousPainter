@@ -157,7 +157,6 @@ def main():
     plt.xlabel('n generation')
     plt.ylabel('Min / Average Fitness')
     plt.title('Min and Average fitness over Generations')
-
     plt.show()
 
 if __name__ == "__main__":
