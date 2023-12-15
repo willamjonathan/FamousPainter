@@ -14,11 +14,7 @@ import seaborn as sns
 
 
 file_path = "reconstructor/config.txt"
-
-
 file_content = None
-
-
 try:
     with open(file_path, "r") as file:
         file_content = file.read()
@@ -28,162 +24,141 @@ except Exception as e:
     print(f"An error occurred: {e}")
 
 print(file_content)
-# problem related constants
+
+
 POLY_SIZE = 3
 NUM_OF_POLYS = 100
 
-# calculate total number of params in chromosome:
-# For each POLY we have:
-# two coordinates per vertex, 3 color values, one alpha value
-NUM_OF_PARAMS = NUM_OF_POLYS * (POLY_SIZE * 2 + 4)
-
-# Genetic Algorithm constants:
-pop_SIZE = 200
-P_CROSSOVER = 0.9  # probability for crossover
-P_MUTATION = 0.5   # probability for mutating an individual
-MAX_GENERATIONS = 5000
 BESTIND_SIZE = 20
-CROWDING_FACTOR = 10.0  # crowding factor for crossover and mutation
+POP_SIZE = 200
+CROWDING = 10.0  
+PROBABILITY_CROSSOVER = 0.9 
+PROBABILITY_MUTATION = 0.5  
+# MAX_GEN = 5000
+# for testing purpose
+MAX_GEN = 50
 
-# set the random seed:
-RANDOM_SEED = 42
-random.seed(RANDOM_SEED)
 
-# create the image test class instance:
+# calling the class for construction
 img_upload = file_content
 ConstructImage = test_img.ConstructImage(img_upload, POLY_SIZE)
 
-# calculate total number of params in chromosome:
-# For each POLY we have:
-# two coordinates per vertex, 3 color values, one alpha value
+# calc total params in chrom, each poly contains x,y 3 color value, and one alph value
 NUM_OF_PARAMS = NUM_OF_POLYS * (POLY_SIZE * 2 + 4)
 
-# all parameter values are bound between 0 and 1, later to be expanded:
-BOUNDS_LOW, BOUNDS_HIGH = 0.0, 1.0  # boundaries for all dimensions
+# parameters are on lowest 0 and highest 1
+border_bottom, border_high = 0.0, 1.0 
 
 toolbox = base.Toolbox()
 
-# define a single objective, minimizing fitness strategy:
+# minimize fitness strategy
+#make individual based on list
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
-
-# create the Individual class based on list:
 creator.create("Individual", list, fitness=creator.FitnessMin)
 
-# helper function for creating random real numbers uniformly distributed within a given range [low, up]
-# it assumes that the range is the same for every dimension
+# Generate random floats within a given range for each dimension
+# Parameters: low - lower bound, up - upper bound, num_of_params - number of dimensions
 def randomFloat(low, up):
     return [random.uniform(l, u) for l, u in zip([low] * NUM_OF_PARAMS, [up] * NUM_OF_PARAMS)]
 
-# create an operator that randomly returns a float in the desired range:
-toolbox.register("attrFloat", randomFloat, BOUNDS_LOW, BOUNDS_HIGH)
+# make operator that able to produce random number of float
+toolbox.register("attrFloat", randomFloat, border_bottom, border_high)
 
-# create an operator that fills up an Individual instance:
+# make operator to fill indiv instance
 toolbox.register("individualCreator",
                 tools.initIterate,
                 creator.Individual,
                 toolbox.attrFloat)
 
-# create an operator that generates a list of individuals:
+# make operator to make list of individual
 toolbox.register("popCreator",
                 tools.initRepeat,
                 list,
                 toolbox.individualCreator)
 
 
-# fitness calculation using MSE as difference metric:
+# this is for the fitness calculation 
 def getDiff(individual):
     return ConstructImage.MSE_diff(individual, "MSE"),
 
 toolbox.register("evaluate", getDiff)
 
 
-# genetic operators:
+# the operator for genetic
 toolbox.register("select", tools.selTournament, tournsize=2)
 
 toolbox.register("mate",
                 tools.cxSimulatedBinaryBounded,
-                low=BOUNDS_LOW,
-                up=BOUNDS_HIGH,
-                eta=CROWDING_FACTOR)
+                low=border_bottom,
+                up=border_high,
+                eta=CROWDING)
 
 toolbox.register("mutate",
                 tools.mutPolynomialBounded,
-                low=BOUNDS_LOW,
-                up=BOUNDS_HIGH,
-                eta=CROWDING_FACTOR,
+                low=border_bottom,
+                up=border_high,
+                eta=CROWDING,
                 indpb=1.0/NUM_OF_PARAMS)
 
 
-# save the best current drawing every 100 generations (used as a callback):
+# saving the best drawing per 10 draw
 def saveImage(gen, polyData):
 
-    # only every 10 generations:
     if gen % 10 == 0:
 
-        # create folder if does not exist:
         folder = "reconstructor/images/results".format(POLY_SIZE, NUM_OF_POLYS)
         if not os.path.exists(folder):
             os.makedirs(folder)
 
-        # save the image in the folder:
         ConstructImage.save_img(polyData,
                             "{}/after-{}-gen.png".format(folder, gen),
                             "After {} Generations".format(gen))
 
-# Genetic Algorithm flow:
+# THE GENETIC ALGORITHM
 def main():
 
-    # create initial pop (generation 0):
-    pop = toolbox.popCreator(n=pop_SIZE)
+    # initial population
+    pop = toolbox.popCreator(n=POP_SIZE)
 
-    # prepare the statistics object:
+    # the statistic object
     the_statistic = tools.Statistics(lambda ind: ind.fitness.values)
     the_statistic.register("min", numpy.min)
     the_statistic.register("avg", numpy.mean)
 
-    # define the hall-of-fame object:
+    #  for the best individual size
     best_ind = tools.HallOfFame(BESTIND_SIZE)
 
 
-    # perform the Genetic Algorithm flow with elitism and 'saveImage' callback:
+    # do genetic algo  flow with elitism and it will save the image everytime it callbacks
     pop, logbook = elitism.ElitismFunct(pop,
                                                     toolbox,
-                                                    cross_prob=P_CROSSOVER,
-                                                    mutation_prob=P_MUTATION,
-                                                    num_gen=MAX_GENERATIONS,
+                                                    cross_prob=PROBABILITY_CROSSOVER,
+                                                    mutation_prob=PROBABILITY_MUTATION,
+                                                    num_gen=MAX_GEN,
                                                     callback=saveImage,
                                                     the_statistic=the_statistic,
                                                     best_indiv=best_ind,
                                                     verbose=True)
-    # generated()
 
-    # print best solution found:
     best = best_ind.items[0]
-    print()
-    print("Best Solution = ", best)
-    print("Best Score = ", best.fitness.values[0])
-    print()
+    print("Best solution result = ", best)
+    print("Best score result = ", best.fitness.values[0])
 
     # draw best image next to reference image:
-    ConstructImage.plt_img(ConstructImage.POLYDataToImage(best))
+    ConstructImage.plt_img(ConstructImage.polyDataToImage(best))
 
     # extract statistics:
     minFitnessValues, meanFitnessValues = logbook.select("min", "avg")
 
-    # plot statistics:
     sns.set_style("whitegrid")
     plt.figure("the_statistic:")
     plt.plot(minFitnessValues, color='red')
     plt.plot(meanFitnessValues, color='green')
-    plt.xlabel('Generation')
+    plt.xlabel('n generation')
     plt.ylabel('Min / Average Fitness')
     plt.title('Min and Average fitness over Generations')
 
-    # show both plots:
     plt.show()
-
-        
-
 
 if __name__ == "__main__":
     main()
