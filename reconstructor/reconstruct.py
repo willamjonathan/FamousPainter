@@ -7,7 +7,7 @@ import numpy
 import os
 
 import image_test
-import elitism_callback
+import elitism
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -38,11 +38,11 @@ NUM_OF_POLYGONS = 100
 NUM_OF_PARAMS = NUM_OF_POLYGONS * (POLYGON_SIZE * 2 + 4)
 
 # Genetic Algorithm constants:
-POPULATION_SIZE = 200
+pop_SIZE = 200
 P_CROSSOVER = 0.9  # probability for crossover
 P_MUTATION = 0.5   # probability for mutating an individual
 MAX_GENERATIONS = 5000
-HALL_OF_FAME_SIZE = 20
+BESTIND_SIZE = 20
 CROWDING_FACTOR = 10.0  # crowding factor for crossover and mutation
 
 # set the random seed:
@@ -84,7 +84,7 @@ toolbox.register("individualCreator",
                 toolbox.attrFloat)
 
 # create an operator that generates a list of individuals:
-toolbox.register("populationCreator",
+toolbox.register("popCreator",
                 tools.initRepeat,
                 list,
                 toolbox.individualCreator)
@@ -134,32 +134,32 @@ def saveImage(gen, polygonData):
 # Genetic Algorithm flow:
 def main():
 
-    # create initial population (generation 0):
-    population = toolbox.populationCreator(n=POPULATION_SIZE)
+    # create initial pop (generation 0):
+    pop = toolbox.popCreator(n=pop_SIZE)
 
     # prepare the statistics object:
-    stats = tools.Statistics(lambda ind: ind.fitness.values)
-    stats.register("min", numpy.min)
-    stats.register("avg", numpy.mean)
+    the_statistic = tools.Statistics(lambda ind: ind.fitness.values)
+    the_statistic.register("min", numpy.min)
+    the_statistic.register("avg", numpy.mean)
 
     # define the hall-of-fame object:
-    hof = tools.HallOfFame(HALL_OF_FAME_SIZE)
+    best_ind = tools.HallOfFame(BESTIND_SIZE)
 
 
     # perform the Genetic Algorithm flow with elitism and 'saveImage' callback:
-    population, logbook = elitism_callback.eaSimpleWithElitismAndCallback(population,
+    pop, logbook = elitism.ElitismFunct(pop,
                                                     toolbox,
-                                                    cxpb=P_CROSSOVER,
-                                                    mutpb=P_MUTATION,
-                                                    ngen=MAX_GENERATIONS,
+                                                    cross_prob=P_CROSSOVER,
+                                                    mutation_prob=P_MUTATION,
+                                                    num_gen=MAX_GENERATIONS,
                                                     callback=saveImage,
-                                                    stats=stats,
-                                                    halloffame=hof,
+                                                    the_statistic=the_statistic,
+                                                    best_indiv=best_ind,
                                                     verbose=True)
     # generated()
 
     # print best solution found:
-    best = hof.items[0]
+    best = best_ind.items[0]
     print()
     print("Best Solution = ", best)
     print("Best Score = ", best.fitness.values[0])
@@ -173,7 +173,7 @@ def main():
 
     # plot statistics:
     sns.set_style("whitegrid")
-    plt.figure("Stats:")
+    plt.figure("the_statistic:")
     plt.plot(minFitnessValues, color='red')
     plt.plot(meanFitnessValues, color='green')
     plt.xlabel('Generation')
