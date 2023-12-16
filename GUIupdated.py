@@ -48,12 +48,13 @@ def stop_processrecon():
         print("error: stop recon", str(e))
 
 def run_identify_script():
-    try:
-        global subprocess2
-        # ini yang bikin jadi 2 screen, buat ngetes
-        subprocess2 = subprocess.Popen([sys.executable, "identifier/identifier.py"])
-    except Exception as e:
-        print("error: stop identify", str(e))
+    # try:
+    #     global subprocess2
+    #     # ini yang bikin jadi 2 screen, buat ngetes
+    #     subprocess2 = subprocess.Popen([sys.executable, "identifier/identifier.py"])
+    # except Exception as e:
+    #     print("error: stop identify", str(e))
+    print("goblog")
 def stop_processident():
     try:
         subprocess2.terminate()
@@ -363,7 +364,7 @@ def reconstruct(root):
     )
     line1.place(relx=0.4, rely=0.5)           
 
-    uploadbutton = Button(
+    uploadbutton = Button( 
         root,
         font=(myFont, 12),
         command=upload_photo,
@@ -596,8 +597,8 @@ def identify(root):
         foreground="white"
     )
     line1.place(relx=0.1, rely=0.5)           
-
-    uploadbutton = Button(
+    ################
+    uploadbutton = Button(  #This is for identifier upload?
         root,
         font=(myFont, 12),
         command=upload_photoident,
@@ -615,6 +616,7 @@ def identify(root):
         background="white",
         foreground="black",
     )
+    ##########################
     startidentify.place(relx=0.3, rely=0.55)
     returnButton = Button(
         root,
@@ -636,6 +638,7 @@ def identifyresult(root):
     global flag1
     global file_path1
     file_path1 = "identifier/config.txt"
+    print(file_path1)
     cleanPage(root)
     global myFont
     myFont = font.Font(family="Helvetica")
@@ -653,15 +656,22 @@ def identifyresult(root):
     try:
         with open(file_path1, "r") as file:
             file_content = file.read().strip()  # Strip any leading/trailing whitespace
-
+            print(file_content)
+        
         # Load the image
         img = Image.open(file_content)  # Adjust the size as needed
+        print(img)
         photo = ImageTk.PhotoImage(img)
+        print("PHOTO",photo)
 
-        # Display the picture
-        picture_label1 = Label(root, image=photo)
-        picture_label1.pack(padx=10, pady=10)
-        
+        # Display the picture  
+        backgroundpic2 = img
+        background2 = ImageTk.PhotoImage(backgroundpic2)
+
+        backgroundlabel2 = Label(root, image=background2, background="black")
+        backgroundlabel2.image = background2
+        backgroundlabel2.place(x=415, y=200)
+
         labels = {0: 'Vincent_van_Gogh', 1: 'Edgar_Degas', 2: 'Pablo_Picasso', 3: 'Pierre-Auguste_Renoir', 4: 'Albrecht_Dürer', 5: 'Paul_Gauguin', 6: 'Francisco_Goya', 7: 'Rembrandt', 8: 'Alfred_Sisley', 9: 'Titian', 10: 'Marc_Chagall'}
 
         loaded_model = load_model('identifier/keras_model.h5')
@@ -678,7 +688,6 @@ def identifyresult(root):
         prediction = model.predict(web_image)
         prediction_probability = np.amax(prediction)
         prediction_idx = np.argmax(prediction)
-
         
         print("Predicted artist =", labels[prediction_idx].replace('_', ' '))
         print("Prediction probability =", prediction_probability*100, "%")
