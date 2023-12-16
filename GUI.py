@@ -610,9 +610,7 @@ def identify(root):
     returnButton.place(relx=0.92, rely=0.02)
 
 
-
-
-
+#identifier prediction result
 def identifyresult(root):
     global subprocess2
     global flag1
@@ -721,6 +719,8 @@ def identifyresult(root):
     # stop_processrecon()
     # root.protocol("WM_DELETE_WINDOW", quitrecon)
 
+
+#TKinter call to display GUI when run
 def main():
     width = 1000
     height = 700
