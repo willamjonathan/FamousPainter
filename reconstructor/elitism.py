@@ -25,7 +25,7 @@ def ElitismFunct(pop, toolbox, cross_prob, mutation_prob, num_gen, callback=None
         raise ValueError("best_indiv parameter must not be empty!")
 
     best_indiv.update(pop)
-    hof_size = len(best_indiv.items) if best_indiv.items else 0
+    bestind_size = len(best_indiv.items) if best_indiv.items else 0
 
     record = the_statistic.compile(pop) if the_statistic else {}
     logbook.record(gen=0, nevals=len(inv_individual), **record)
@@ -36,7 +36,7 @@ def ElitismFunct(pop, toolbox, cross_prob, mutation_prob, num_gen, callback=None
     for gen in range(1, num_gen + 1):
 
         # selecting the next generation
-        offspring = toolbox.select(pop, len(pop) - hof_size)
+        offspring = toolbox.select(pop, len(pop) - bestind_size)
 
         # varying the pool of individuals
         offspring = algorithms.varAnd(offspring, toolbox, cross_prob, mutation_prob)
