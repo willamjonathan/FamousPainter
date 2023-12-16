@@ -17,22 +17,22 @@ import cv2
 CONFIG_FILE = "reconstructor/config.txt"
 CONFIG_FILE2 = "identifier/config.txt"
 
-def buttonreconstruct_click():
-    try:
-        # subprocess.run(["python", "reconstructor/generated.py"])
-        subprocess.run([sys.executable, "reconstructor/generated.py"])
-        print('painting reconstructor is running')
-    except Exception as e:
-        print("error:buttonreconstruct ", str(e))
+# def buttonreconstruct_click():
+#     try:
+#         # subprocess.run(["python", "reconstructor/generated.py"])
+#         subprocess.run([sys.executable, "reconstructor/generated.py"])
+#         print('painting reconstructor is running')
+#     except Exception as e:
+#         print("error:buttonreconstruct ", str(e))
 
 
-def buttonidentifier_click():
-    try:
-        # subprocess.run(["python", "identifier/main.py"])
-        subprocess.run([sys.executable, "identifier/main.py"])
-        print('painter identifier is running')
-    except Exception as e:
-        print("error: buttonidentifier ", str(e))
+# def buttonidentifier_click():
+#     try:
+#         # subprocess.run(["python", "identifier/main.py"])
+#         subprocess.run([sys.executable, "identifier/identifier.py"])
+#         print('painter identifier is running')
+#     except Exception as e:
+#         print("error: buttonidentifier ", str(e))
 
 def run_reconstructor_script():
     try:
@@ -50,6 +50,7 @@ def stop_processrecon():
 def run_identify_script():
     try:
         global subprocess2
+        # ini yang bikin jadi 2 screen, buat ngetes
         subprocess2 = subprocess.Popen([sys.executable, "identifier/identifier.py"])
     except Exception as e:
         print("error: stop identify", str(e))

@@ -17,7 +17,7 @@ def button1_click():
 def button2_click():
     try:
         # subprocess.run(["python", "identifier/main.py"])
-        subprocess.run([sys.executable, "identifier/main.py"])
+        subprocess.run([sys.executable, "identifier/identifier.py"])
         label.config(text="Painting identifier is run", fg="green")
     except Exception as e:
         label.config(text=f"Error: {str(e)}", fg="red")
