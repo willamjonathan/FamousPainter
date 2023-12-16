@@ -26,17 +26,17 @@ except Exception as e:
 print(file_content)
 
 
-POLY_SIZE = 3
-NUM_OF_POLYS = 100
+POLY_SIZE = 3 #number of vertices per polygon
+NUM_OF_POLYS = 100 #number of polygons
 
-BESTIND_SIZE = 20
-POP_SIZE = 200
-CROWDING = 10.0  
+BESTIND_SIZE = 20 # max number of solution / best individuals are stored
+POP_SIZE = 200 # population size
+CROWDING = 10.0  #crowding fact6or for the crossover and mutation
 PROBABILITY_CROSSOVER = 0.9 
 PROBABILITY_MUTATION = 0.5  
-# MAX_GEN = 5000
+MAX_GEN = 5000
 # for testing purpose
-MAX_GEN = 50
+# MAX_GEN = 50
 
 
 # calling the class for construction
