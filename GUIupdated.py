@@ -54,7 +54,7 @@ def run_identify_script():
     #     subprocess2 = subprocess.Popen([sys.executable, "identifier/identifier.py"])
     # except Exception as e:
     #     print("error: stop identify", str(e))
-    print("goblog")
+    print("subprocesss identify")
 def stop_processident():
     try:
         subprocess2.terminate()
@@ -650,9 +650,6 @@ def identifyresult(root):
     backgroundlabel.image = background
     backgroundlabel.place(x=0, y=0)
 
-    picture_label = Label(root, background="black")
-    picture_label.pack(padx=10, pady=10)
-    
     try:
         with open(file_path1, "r") as file:
             file_content = file.read().strip()  # Strip any leading/trailing whitespace
@@ -661,16 +658,21 @@ def identifyresult(root):
         # Load the image
         img = Image.open(file_content)  # Adjust the size as needed
         print(img)
+        MAX_SIZE = (500, 500) 
+        img.thumbnail(MAX_SIZE) 
         photo = ImageTk.PhotoImage(img)
         print("PHOTO",photo)
-
+        
+        space=Label(root, background='black')
+        space.pack(pady=10)
+        
         # Display the picture  
         backgroundpic2 = img
         background2 = ImageTk.PhotoImage(backgroundpic2)
 
         backgroundlabel2 = Label(root, image=background2, background="black")
         backgroundlabel2.image = background2
-        backgroundlabel2.place(x=415, y=200)
+        backgroundlabel2.pack(pady=10)
 
         labels = {0: 'Vincent_van_Gogh', 1: 'Edgar_Degas', 2: 'Pablo_Picasso', 3: 'Pierre-Auguste_Renoir', 4: 'Albrecht_Dürer', 5: 'Paul_Gauguin', 6: 'Francisco_Goya', 7: 'Rembrandt', 8: 'Alfred_Sisley', 9: 'Titian', 10: 'Marc_Chagall'}
 
@@ -692,12 +694,17 @@ def identifyresult(root):
         print("Predicted artist =", labels[prediction_idx].replace('_', ' '))
         print("Prediction probability =", prediction_probability*100, "%")
         
-        text_label = Label(root, text="Your painting might be made by "+labels[prediction_idx].replace('_', ' '))
-        text_label.pack(pady=10)
+        text_label = Label(root, 
+                           text="Your painting might be made by "+labels[prediction_idx].replace('_', ' '),
+                           background='black')
+        text_label.pack()
         
-        text_label = Label(root, text="The prediction accuracy: "+str(prediction_probability*100)+ " %")
-        text_label.pack(pady=10)
-
+        text_label = Label(root, 
+                           text="The prediction accuracy: "+str(prediction_probability*100)+ " %",
+                           background='black')
+        text_label.pack()
+        space=Label(root, background='black')
+        space.pack(pady=10)
     except FileNotFoundError:
         print(f"File not found: {file_path1}")
     except Exception as e:
@@ -720,8 +727,8 @@ def identifyresult(root):
     thread_script2 = threading.Thread(target=run_identify_script)
     thread_script2.start()
     thread_script2.join()
-    stop_processrecon()
-    root.protocol("WM_DELETE_WINDOW", quitrecon)
+    # stop_processrecon()
+    # root.protocol("WM_DELETE_WINDOW", quitrecon)
 
 def main():
     width = 1000
