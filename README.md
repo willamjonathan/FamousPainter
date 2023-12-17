@@ -13,4 +13,5 @@ Famous Painting Image Replicator with Genetic Algorithm (DEAP)  and Painter Iden
 
 ## Notes 
 ❗Please kindly use the DownloadModel.py first to download the model
+
 ❗Don't forget to change the name of the model to keras_model.h5 (if soemthing happen)
