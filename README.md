@@ -17,7 +17,7 @@ The image replication component employs the DEAP framework, implementing a genet
 ## Dataset Source ℹ️
 https://www.kaggle.com/code/paultimothymooney/collections-of-paintings-from-50-artists
 ## Video Demo 📹
-Link to (Google Drive)[https://drive.google.com/file/d/1ODouZHuYMgsG8821yfGF8lbg3xq737Zw/view?usp=sharing]
+Link to [Google Drive](https://drive.google.com/file/d/1ODouZHuYMgsG8821yfGF8lbg3xq737Zw/view?usp=sharing)
 
 ## Notes 
 ❗Please kindly use the DownloadModel.py first to download the model
