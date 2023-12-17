@@ -5,10 +5,10 @@ MUSE is a program designed with 2 main features, an image reconstructor and a pa
 * Class: L5AC 
 * Course: Artificial Intelligence (COMP6065001)
 * Members: 
-    1. Andrean Hasan - 2501982550
-    2. Maria Clarin -2501990331
-    3. Raissa Azaria - 2502005805
-    4. William Jonathan Mulyadi - 2502045683
+    * Andrean Hasan - 2501982550
+    * Maria Clarin -2501990331
+    * Raissa Azaria - 2502005805
+    * William Jonathan Mulyadi - 2502045683
 
 ## External Links ℹ️
 1. [Dataset Source](https://www.kaggle.com/code/paultimothymooney/collections-of-paintings-from-50-artists)
